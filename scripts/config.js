@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const { configPath } = require('./paths');
 
 const DEFAULT_CONFIG = {
@@ -21,18 +22,27 @@ function mergeConfig(loaded) {
   };
 }
 
-function readConfig() {
+function readConfig(onError) {
+  let raw;
   try {
-    const raw = fs.readFileSync(configPath(), 'utf8');
+    raw = fs.readFileSync(configPath(), 'utf8');
+  } catch (err) {
+    if (err.code !== 'ENOENT' && typeof onError === 'function') {
+      onError(`read failed: ${err.message}`);
+    }
+    return mergeConfig(null);
+  }
+  try {
     return mergeConfig(JSON.parse(raw));
-  } catch {
+  } catch (err) {
+    if (typeof onError === 'function') {
+      onError(`invalid JSON: ${err.message}`);
+    }
     return mergeConfig(null);
   }
 }
 
 function writeConfig(cfg) {
-  const fs = require('fs');
-  const path = require('path');
   const p = configPath();
   fs.mkdirSync(path.dirname(p), { recursive: true });
   fs.writeFileSync(p, JSON.stringify(cfg, null, 2) + '\n');

@@ -5,6 +5,7 @@ const { logPath } = require('./paths');
 const { readConfig } = require('./config');
 
 const ALLOWED_EVENTS = new Set(['Stop', 'Notification']);
+const LOG_SIZE_CAP = 1024 * 1024; // 1 MB
 
 function buildNotification(payload) {
   const p = payload || {};
@@ -27,10 +28,21 @@ function shouldFire(payload, config) {
   return true;
 }
 
+function rotateIfLarge(p) {
+  try {
+    if (fs.statSync(p).size > LOG_SIZE_CAP) {
+      fs.renameSync(p, p + '.1');
+    }
+  } catch {
+    // file missing or stat failed — nothing to rotate
+  }
+}
+
 function appendLog(entry) {
   try {
     const p = logPath();
     fs.mkdirSync(path.dirname(p), { recursive: true });
+    rotateIfLarge(p);
     fs.appendFileSync(p, JSON.stringify(entry) + '\n');
   } catch {
     // swallow — logging must never break notifications
@@ -75,7 +87,15 @@ async function main() {
   try {
     const raw = await readStdin();
     payload = raw.trim() ? JSON.parse(raw) : {};
-    const config = readConfig();
+    const config = readConfig((msg) => {
+      appendLog({
+        ts: new Date().toISOString(),
+        pid: process.pid,
+        ppid: process.ppid,
+        level: 'warn',
+        message: `config ${msg}`,
+      });
+    });
     const fire = shouldFire(payload, config);
     appendLog({
       ts: new Date().toISOString(),
