@@ -4,6 +4,7 @@
   "private": true,
   "description": "Cross-platform desktop notifications for Claude Code sessions.",
   "license": "MIT",
+  "engines": { "node": ">=18" },
   "scripts": {
     "test": "node --test scripts/notify.test.js"
   },
