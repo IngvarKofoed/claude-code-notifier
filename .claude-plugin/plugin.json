@@ -1,0 +1,8 @@
+{
+  "name": "claude-code-notifier",
+  "version": "0.1.0",
+  "description": "Cross-platform desktop notifications on Claude Code Stop and Notification hooks.",
+  "author": {
+    "name": "Ingvar Kofoed"
+  }
+}
