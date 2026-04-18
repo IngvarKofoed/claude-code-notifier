@@ -8,7 +8,7 @@
 
 **Tech Stack:** Node.js (user-provided), `node-notifier` (bundles platform binaries), Node's built-in `node --test` test runner.
 
-**Spec:** `docs/superpowers/specs/2026-04-18-claude-code-notifier-design.md`
+**Spec:** `docs/DESIGN.md`
 
 ---
 
