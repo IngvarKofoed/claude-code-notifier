@@ -1,5 +1,10 @@
 const path = require('path');
+const fs = require('fs');
+const os = require('os');
 const { spawn } = require('child_process');
+
+const ALLOWED_EVENTS = new Set(['Stop', 'Notification']);
+const LOG_PATH = path.join(os.homedir(), '.claude-code-notifier.log');
 
 function buildNotification(payload) {
   const p = payload || {};
@@ -8,6 +13,14 @@ function buildNotification(payload) {
   const title = path.basename(cwd) || 'Claude Code';
   const message = event === 'Notification' ? 'Claude needs input' : 'Claude finished';
   return { title, message };
+}
+
+function appendLog(entry) {
+  try {
+    fs.appendFileSync(LOG_PATH, JSON.stringify(entry) + '\n');
+  } catch {
+    // swallow — logging must never break notifications
+  }
 }
 
 async function readStdin() {
@@ -39,11 +52,34 @@ function runWorker() {
 }
 
 async function main() {
+  let payload = {};
   try {
     const raw = await readStdin();
-    const payload = raw.trim() ? JSON.parse(raw) : {};
-    dispatchWorker(buildNotification(payload));
+    payload = raw.trim() ? JSON.parse(raw) : {};
+    const event = payload.hook_event_name;
+    const allowed = ALLOWED_EVENTS.has(event);
+    appendLog({
+      ts: new Date().toISOString(),
+      pid: process.pid,
+      ppid: process.ppid,
+      event,
+      skipped: !allowed,
+      cwd: payload.cwd,
+      session_id: payload.session_id,
+      transcript_path: payload.transcript_path,
+      stop_hook_active: payload.stop_hook_active,
+      payload,
+    });
+    if (allowed) {
+      dispatchWorker(buildNotification(payload));
+    }
   } catch (err) {
+    appendLog({
+      ts: new Date().toISOString(),
+      pid: process.pid,
+      ppid: process.ppid,
+      error: err.message,
+    });
     process.stderr.write(`claude-code-notifier: ${err.message}\n`);
   } finally {
     process.exit(0);
