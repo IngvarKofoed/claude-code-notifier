@@ -29,6 +29,7 @@ test('missing cwd → title falls back to "Claude Code"', () => {
 test('empty string cwd → title falls back to "Claude Code"', () => {
   const result = buildNotification({ hook_event_name: 'Stop', cwd: '' });
   assert.strictEqual(result.title, 'Claude Code');
+  assert.strictEqual(result.message, 'Claude finished');
 });
 
 test('unknown event name → defaults to finished body', () => {

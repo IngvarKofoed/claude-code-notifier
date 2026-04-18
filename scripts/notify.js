@@ -27,6 +27,8 @@ async function main() {
     notifier.notify({ title, message, sound: true });
   } catch (err) {
     process.stderr.write(`claude-code-notifier: ${err.message}\n`);
+  } finally {
+    process.exit(0);
   }
 }
 
