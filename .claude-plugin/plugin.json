@@ -4,5 +4,8 @@
   "description": "Cross-platform desktop notifications on Claude Code Stop and Notification hooks.",
   "author": {
     "name": "Ingvar Kofoed"
-  }
+  },
+  "homepage": "https://github.com/IngvarKofoed/claude-code-notifier",
+  "repository": "https://github.com/IngvarKofoed/claude-code-notifier",
+  "license": "MIT"
 }

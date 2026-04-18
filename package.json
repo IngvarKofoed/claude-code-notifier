@@ -4,6 +4,14 @@
   "private": true,
   "description": "Cross-platform desktop notifications for Claude Code sessions.",
   "license": "MIT",
+  "homepage": "https://github.com/IngvarKofoed/claude-code-notifier",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IngvarKofoed/claude-code-notifier.git"
+  },
+  "bugs": {
+    "url": "https://github.com/IngvarKofoed/claude-code-notifier/issues"
+  },
   "engines": { "node": ">=18" },
   "scripts": {
     "test": "node --test scripts/notify.test.js"
