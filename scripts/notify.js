@@ -15,6 +15,17 @@ function buildNotification(payload) {
   return { title, message };
 }
 
+function shouldFire(payload) {
+  const p = payload || {};
+  const event = p.hook_event_name;
+  if (!ALLOWED_EVENTS.has(event)) return false;
+  if (event === 'Notification') {
+    const type = p.notification_type;
+    if (type !== undefined && type !== 'permission_prompt') return false;
+  }
+  return true;
+}
+
 function appendLog(entry) {
   try {
     fs.appendFileSync(LOG_PATH, JSON.stringify(entry) + '\n');
@@ -56,21 +67,21 @@ async function main() {
   try {
     const raw = await readStdin();
     payload = raw.trim() ? JSON.parse(raw) : {};
-    const event = payload.hook_event_name;
-    const allowed = ALLOWED_EVENTS.has(event);
+    const fire = shouldFire(payload);
     appendLog({
       ts: new Date().toISOString(),
       pid: process.pid,
       ppid: process.ppid,
-      event,
-      skipped: !allowed,
+      event: payload.hook_event_name,
+      notification_type: payload.notification_type,
+      skipped: !fire,
       cwd: payload.cwd,
       session_id: payload.session_id,
       transcript_path: payload.transcript_path,
       stop_hook_active: payload.stop_hook_active,
       payload,
     });
-    if (allowed) {
+    if (fire) {
       dispatchWorker(buildNotification(payload));
     }
   } catch (err) {
@@ -94,4 +105,4 @@ if (require.main === module) {
   }
 }
 
-module.exports = { buildNotification };
+module.exports = { buildNotification, shouldFire };
