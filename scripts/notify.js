@@ -24,10 +24,11 @@ async function main() {
     const payload = raw.trim() ? JSON.parse(raw) : {};
     const { title, message } = buildNotification(payload);
     const notifier = require('node-notifier');
-    notifier.notify({ title, message, sound: true });
+    notifier.notify({ title, message, sound: true }, () => {
+      process.exit(0);
+    });
   } catch (err) {
     process.stderr.write(`claude-code-notifier: ${err.message}\n`);
-  } finally {
     process.exit(0);
   }
 }
