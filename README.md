@@ -16,15 +16,19 @@ macOS and Windows need no extra setup — `node-notifier` bundles the native hel
 
 ## Install
 
-1. Install the plugin with Claude Code (e.g., via a plugin marketplace or by adding it to your plugin config).
-2. Start a Claude Code session. The `SessionStart` hook will install `node-notifier` on first run (a one-time ~5-second delay).
+Install this plugin using Claude Code's plugin system. See Claude Code's plugin docs for the exact command for your setup; typical options are:
 
-## Manual dependency install (optional)
+- Add the repository (`https://github.com/IngvarKofoed/claude-code-notifier`) through the `/plugin` command inside Claude Code.
+- Clone the repo locally and point Claude Code at the checkout in your plugin configuration.
 
-If you'd rather not wait for the first-session auto-install:
+On the first Claude Code session after installation, the `SessionStart` hook runs `npm install` inside the plugin directory to fetch `node-notifier` (a one-time ~5-second delay). Subsequent sessions are instant.
+
+### Manual dependency install (optional)
+
+If you'd prefer not to wait for the first-session auto-install, run `npm install` inside the plugin's installed directory:
 
 ```bash
-cd "$(claude plugin path claude-code-notifier)"  # or the plugin's install directory
+cd <path-to-plugin-install>
 npm install
 ```
 
