@@ -1,0 +1,13 @@
+{
+  "name": "claude-code-notifier",
+  "owner": {
+    "name": "Ingvar Kofoed"
+  },
+  "plugins": [
+    {
+      "name": "claude-code-notifier",
+      "source": "./",
+      "description": "Cross-platform desktop notifications on Claude Code Stop and Notification hooks."
+    }
+  ]
+}
