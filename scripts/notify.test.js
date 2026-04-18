@@ -80,3 +80,24 @@ test('shouldFire: empty payload → skips', () => {
 test('shouldFire: null payload → skips', () => {
   assert.strictEqual(shouldFire(null), false);
 });
+
+test('shouldFire: config disables Stop event → skips', () => {
+  const cfg = { events: { Stop: false, Notification: true } };
+  assert.strictEqual(shouldFire({ hook_event_name: 'Stop' }, cfg), false);
+});
+
+test('shouldFire: config disables Notification → skips', () => {
+  const cfg = { events: { Stop: true, Notification: false } };
+  assert.strictEqual(
+    shouldFire(
+      { hook_event_name: 'Notification', notification_type: 'permission_prompt' },
+      cfg,
+    ),
+    false,
+  );
+});
+
+test('shouldFire: config enables both → fires as before', () => {
+  const cfg = { events: { Stop: true, Notification: true } };
+  assert.strictEqual(shouldFire({ hook_event_name: 'Stop' }, cfg), true);
+});

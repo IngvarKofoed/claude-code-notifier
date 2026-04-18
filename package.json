@@ -12,9 +12,11 @@
   "bugs": {
     "url": "https://github.com/IngvarKofoed/claude-code-notifier/issues"
   },
-  "engines": { "node": ">=18" },
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
-    "test": "node --test scripts/notify.test.js"
+    "test": "node --test scripts/notify.test.js scripts/config.test.js"
   },
   "dependencies": {
     "node-notifier": "^10.0.1"
