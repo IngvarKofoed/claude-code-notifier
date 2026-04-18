@@ -56,6 +56,35 @@ cd <path-to-plugin-install>
 npm install
 ```
 
+## Configuration
+
+Zero-config by default. To change the notification sound or disable one of the two events, run the wizard:
+
+```
+/claude-code-notifier:configure
+```
+
+That slash command inside Claude Code will print the exact `node ...` command to copy-paste into a fresh terminal (the wizard needs a real TTY and can't run inside Claude Code itself).
+
+**Where settings live:**
+
+- **Config:** `$XDG_CONFIG_HOME/claude-code-notifier/config.json` (default `~/.config/claude-code-notifier/config.json` on macOS/Linux; `%APPDATA%\claude-code-notifier\config.json` on Windows).
+- **Log:** `$XDG_STATE_HOME/claude-code-notifier/notifier.log` (default `~/.local/state/claude-code-notifier/notifier.log` on macOS/Linux; `%LOCALAPPDATA%\claude-code-notifier\notifier.log` on Windows). One JSON line per hook invocation, including skipped ones.
+
+**Config file shape:**
+
+```json
+{
+  "sound": true,
+  "events": {
+    "Stop": true,
+    "Notification": true
+  }
+}
+```
+
+`sound` is `true` (default system sound), `false` (silent), or a macOS sound name (`"Glass"`, `"Hero"`, `"Ping"`, `"Purr"`, `"Submarine"`, `"Tink"`, `"Funk"`). Sound names are mostly ignored on Windows/Linux.
+
 ## How it works
 
 Three hooks are registered:
